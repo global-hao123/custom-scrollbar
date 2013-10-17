@@ -6,6 +6,8 @@
  * Compatibility:
  * 1. IE 6-10, Firefox, Opera, Chrome, Safari
  * 2. ltr/rtl
+ * 3. Windows / Mac
+ * 4. Mouse / Touchpad
  * 
  * TODO:
  *

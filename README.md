@@ -2,6 +2,20 @@
 
 A jQuery plugin for custom scrollbar
 
+## Compatibility
+
+- IE 6-10, Firefox, Opera, Chrome, Safari
+- ltr / rtl
+- Windows / Mac
+- Mouse / Touchpad
+
+## TODO
+
+ - [Feature] drag when middle-key is pressing
+ - [Feature] support mobil device
+ - [Feature] resize support
+ - [API] destroy support
+
 ## Demo
 
 ## Getting Started
@@ -90,12 +104,16 @@ $("#test1, #test2").scrollable({
 });
 
 // Event API
+
 // onInit
+
 // onScroll
+
+// onWheel
 
 // onStartPress
 // onEndPress
-         *
+
 // onStartDrag
 // onEndDrag
 
