@@ -221,7 +221,7 @@ fn.initLayout = function() {
                 $wrap.css({"display": "block"});
             })
             .on("mouseleave", function() {
-                $wrap.css({"display": "none"});
+                !state.draging && $wrap.css({"display": "none"});
             });
     }
 
@@ -322,6 +322,7 @@ fn.mouseHandle = function(e, that) {
         }
 
         if(!state.dir) tmp.w = tmp.w - state._w;
+        state.draging = !0;
 
         $(DOC)
             .on("mousemove.scroll", function(e){
@@ -357,6 +358,7 @@ fn.mouseHandle = function(e, that) {
             $(this).off("mousemove.scroll").off("mouseup.scroll");
             !pressed && that.args.onEndPress && that.args.onEndPress.call(that);
             isPressing = !1;
+            state.draging = !1;
             that.args.onEndDrag && that.args.onEndDrag.call(that);
         })
 }
