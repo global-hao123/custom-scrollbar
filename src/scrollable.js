@@ -19,9 +19,7 @@
 
 var $ = window.jQuery || window.require && require("common:widget/ui/jquery/jquery.js");
 
-if(!$) return;
-
-!function(WIN, DOC, undef) {
+$ && function(WIN, DOC, undef) {
 
     /**
      * check if support 3D hardware acceleration
@@ -123,7 +121,6 @@ fn.init = function() {
  * @return {[type]} [description]
  */
 fn.updateSize = function() {
-    console.log(this.args.autoHide)
     var that = this
         , $el = that.$el
         , $parent = that.$parent
