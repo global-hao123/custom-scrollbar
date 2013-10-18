@@ -2,6 +2,14 @@
 
 http://gitlab.pro/common-ui/custom-scrollbar
 
+| Tables        | Are           | Cool  |
+| ------------- |:-------------:| -----:|
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
+
+<iframe src="http://baidu.com" frameborder="0"></iframe>
+
 <table>
   <thead>
     <tr>
