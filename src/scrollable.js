@@ -13,7 +13,6 @@
  *
  * 1. [Feature] drag when middle-key is pressing
  * 2. [Feature] support mobil device
- * 2. [Feature] resize support
  * 3. [API] destroy support
  */
 
@@ -22,10 +21,15 @@ var $ = window.jQuery || window.require && require("common:widget/ui/jquery/jque
 $ && function(WIN, DOC, undef) {
 
     /**
-     * check if support 3D hardware acceleration
+     * check if 3D hardware acceleration supports
      * @type {String}
      */
     var supportCss3d = 'WebKitCSSMatrix' in WIN && 'm11' in new WebKitCSSMatrix()
+
+    /**
+     * check if MutationObserver supports
+     */
+    , MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver
 
     /**
      * Constructor
@@ -111,22 +115,75 @@ $ && function(WIN, DOC, undef) {
  * @return {[type]} [description]
  */
 fn.init = function() {
-    var that = this;
+    var that = this
+        , $el = that.$el
+        , $parent = that.$parent
+        , $wrap = that.$wrap = $("<div>");
+
+    // Initialization controller Layout
+    $.map(that.args.controller, function(v, k) {
+        $wrap.append(that.state["$" + k] = $('<div class="mod-scroll_' + v + '"></div>'));
+    }); 
+
+    // Update State
+    that.updateState();
+
+    // Update Layout
     that.initLayout();
+
+    if($parent.css("position") === "static") $parent.css({"position": "relative"});
+
+    if(that.state.autoHide) {
+        $wrap.css({"display": "none"});
+        $parent
+            .on("mouseenter", function() {
+                $wrap.css({"display": "block"});
+            })
+            .on("mouseleave", function() {
+                !that.state.draging && $wrap.css({"display": "none"});
+            });
+    }
+
+    $parent
+        .css({overflow: "hidden"})
+        .append($wrap)
+        .on("mousewheel", function(e) {
+            e.preventDefault();
+            that.wheelHandle.call($el, e, that);
+        });
+
+    $wrap
+        .addClass("mod-scroll " + that.args.customClass)
+        .on("mousedown", function(e) {
+            e.preventDefault();
+            that.mouseHandle.call(e.target, e, that);
+        });
+
+    // Observer fallback to IE / Opera
+    if(!MutationObserver) that.resizeTimer = setInterval(function() {
+        that.detectLayout() && that.resizeHandle.call(that);
+    }, 200);
+
     that.args.onInit && that.args.onInit.call(that);
 }
 
 /**
- * Update Layout size
+ * Update State
  * @return {[type]} [description]
  */
-fn.updateSize = function() {
+fn.updateState = function() {
     var that = this
         , $el = that.$el
         , $parent = that.$parent
         , state = $.extend(that.state, {
 
-            dir: that.args.dir === "ltr"
+            // Auto detect direction
+            dir: function(el, dir) {
+                that.args.dir = el.currentStyle
+                ? el.currentStyle[dir]
+                : WIN.getComputedStyle(el, null).getPropertyValue(dir) || "ltr"
+                return that.args.dir === "ltr";
+            }(that.el, "direction")
 
             , autoHide: that.args.autoHide == 1
 
@@ -143,10 +200,10 @@ fn.updateSize = function() {
             , w: $el.outerWidth()
 
             // Axis-x offset of thumb
-            , x: 0
+            , x: that.state.x || 0
 
             // Axis-y offset of thumb
-            , y: 0
+            , y: that.state.y || 0
         })
 
         /**
@@ -172,76 +229,67 @@ fn.updateSize = function() {
 }
 
 /**
- * Layout Initialization
+ * Initialization Layout
  * @return {[type]} [description]
  */
 fn.initLayout = function() {
     var that = this
+        , state = that.state
         , $el = that.$el
         , $parent = that.$parent
-        , $wrap = that.$wrap = $("<div>")
+        , $wrap = that.$wrap
         , style = {}
-        , state;
+        , isShowX = state.W < state.w
+        , isShowY = state.H < state.h;
 
-    // Auto detect direction
-    that.args.dir = that.args.dir || function(el, dir) {
-        return el.currentStyle
-        ? el.currentStyle[dir]
-        : WIN.getComputedStyle(el, null).getPropertyValue(dir) || "ltr"
-    }(that.el, "direction");
-
-    // Update DOM Size
-    that.updateSize();
-
-    // Build controller DOM
-    $.map(that.args.controller, function(v, k) {
-        $wrap.append(that.state["$" + k] = $('<div class="mod-scroll_' + v + '"></div>'));
-    });
-
-    state = that.state;
-
-    state.$thumbX.css({"width": state._w + "px"});
-    state.$thumbY.css({"height": state._h + "px"});
-
+    // Reset Layout
     style[state.dir ? "right" : "left"] = 0;
-
+    style.display = isShowY ? "block" : "none";
     state.$barY.css(style);
-    state.$thumbY.css(style);
+    state.$thumbY.css(style).css({"height": state._h + "px"});
 
     style = {};
     style[state.dir ? "left" : "right"] = 0;
-    state.$thumbX.css(style);
+    style.display = isShowX ? "block" : "none";
+    state.$barX.css(style);
+    state.$thumbX.css(style).css({"width": state._w + "px"});
 
-    if($parent.css("position") === "static") $parent.css({"position": "relative"});
+    // Start Observer
+    if(MutationObserver) {
+        that.observer = new MutationObserver(function(mutations) {
+            that.detectLayout() && that.resizeHandle.call(that);
+        });
 
-    if(state.autoHide) {
-        $wrap.css({"display": "none"});
-        $parent
-            .on("mouseenter", function() {
-                $wrap.css({"display": "block"});
-            })
-            .on("mouseleave", function() {
-                !state.draging && $wrap.css({"display": "none"});
+        $($el, $parent).each(function() {
+            that.observer.observe(this, {
+                attributes: true
+                , childList: true
+                , characterData: true
+                // , subtree: true
             });
+        });
     }
+}
 
-    $parent
-        .css({overflow: "hidden"})
-        .append($wrap)
-        .on("mousewheel", function(e) {
-            e.preventDefault();
-            that.wheelHandle.call($el, e, that);
-        })
-        .on("resize", function(e) {
-            // TODO
-        });
+fn.resizeHandle = function() {
+    var that = this,
+    state = that.state;
 
-    $wrap
-        .addClass("mod-scroll " + that.args.customClass)
-        .on("mousedown", function(e) {
-            e.preventDefault();
-            that.mouseHandle.call(e.target, e, that);
-        });
+    that.observer && that.observer.disconnect();
+
+    that.updateState();
+
+    that.scrollTo(state.$thumbX, {
+        x: Math.floor(-state.x * state.W / state.w)
+        , y: 0
+    });
+
+    that.scrollTo(state.$thumbY, {
+        x: 0
+        , y: Math.floor(-state.y * state.H / state.h)
+    });
+
+    that.initLayout();
 }
 
 /**
@@ -416,6 +464,20 @@ fn.fixPos = function(n, axis) {
 }
 
 /**
+ * Detect layout is dynamic changed
+ * @return {[type]} [description]
+ */
+fn.detectLayout = function() {
+    var that = this
+        , state = that.state;
+
+    return !(state.h === that.$el.outerHeight()
+        && state.w === that.$el.outerWidth()
+        && state.H === that.$parent.height()
+        && state.W === that.$parent.width());
+}
+
+/**
  * Keep scroll function simplest
  * @type {[type]}
  */
@@ -460,7 +522,14 @@ fn.getDelta = function(e) {
     return delta;
 }
 
+// TODO
 fn.destroy = function() {
+    var that = this;
+
+    // Stop observer
+    MutationObserver
+    ? that.observer && that.observer.disconnect()
+    : clearInterval(that.resizeTimer);
 }
 
 

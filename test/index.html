@@ -12,7 +12,7 @@
     overflow: auto;
 }
 
-.inner{ background: #eee; border: 20px solid #f90; line-height: 2; width: 200px;}
+.inner{ background: #eee; border: 20px solid #f90; line-height: 2; width: 200px; overflow: hidden;}
 
 </style>
 
@@ -25,7 +25,7 @@
 </head>
 <body>
 <div class="wrap">
-    <div class="inner">
+    <div class="inner" id="test0">
         scroll...
         <br>
         scroll...
@@ -179,6 +179,12 @@
 <script>
 
 $("#test1").scrollable();
+
+setInterval(function() {
+    $("#test1, #test0")
+        .append("<p>pppp</p>")
+        // .height($("#test1").height() + 50);
+}, 2000);
 
 $("#test2").scrollable({
     autoHide: false,
