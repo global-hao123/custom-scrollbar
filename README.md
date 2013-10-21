@@ -13,7 +13,6 @@ A jQuery plugin for custom scrollbar
 
  - [Feature] drag when middle-key is pressing
  - [Feature] support mobil device
- - [Feature] resize support
  - [API] destroy support
 
 ## Demo
@@ -79,6 +78,12 @@ $("#test1, #test2").scrollable({
     , dir: ""
 
     /**
+     * Timer of update layout(0 | false ==> do not check)
+     * @type {Number}
+     */
+    , watch: 200
+
+    /**
      * Auto hide scrollbar when mouseleave
      * @type {String|Bool|Number}
      * @example: true, 1, "1" ==> true | false, 0, "0" ==> false
@@ -101,60 +106,74 @@ $("#test1, #test2").scrollable({
         , thumbX: "thumb-x"
         , thumbY: "thumb-y"
     }
+    
+    /**
+     * Fire when scroll
+     */
+    , onScroll = function() {
+        console.log(this.state)
+    }
 });
-
-// Event API
-
-// onInit
-
-// onScroll
-
-// onWheel
-
-// onStartPress
-// onEndPress
-
-// onStartDrag
-// onEndDrag
-
-// Dynamic state, allows read and write
-this.state = {
-    dir: that.args.dir === "ltr"
-
-    , autoHide: that.args.autoHide == 1
-
-    // Outer Height
-    , H: $parent.height()
-
-    // Inner Height
-    , h: $el.outerHeight()
-
-    // Outer Width
-    , W: $parent.width()
-
-    // Inner Width
-    , w: $el.outerWidth()
-
-    // Axis-x offset of thumb
-    , x: 0
-
-    // Axis-y offset of thumb
-    , y: 0
-
-    // Update scroll offset
-    , offset_x: Math.max(state.w - state.W, 0)
-    , offset_y: Math.max(state.h - state.H, 0)
-
-    // Update thumb size
-    , _w: thumbSize(state.W, state.w)
-    , _h: thumbSize(state.H, state.h)
-}
 ```
+
+## Options
+
+| Option        | Type | Default Value        | Description |
+| ------------- |:-----|:--------:| -----:|
+| wheelSpeed     | `Number` | 20 | mousewheel speed |
+| pressDelay     | `Number` | 200 | Mousedown pressing delay on scrollbar |
+| watch     | `Number` | 200 | Timer of update layout(0 | false ==> do not check)|
+| dir     | `String` | "" | Direction(ltr/trl), default to auto detect|
+| autoHide     | `String` / `Bool` / `Number` | true | Auto hide scrollbar when mouseleave(true, 1, "1" ==> true) |
+| customClass    | `String` | "" | Add a custom class, like: `mod-scroll--black` |
+| controller    | `Object` | {barX: "bar-x", barY: "bar-y", thumbX: "thumb-x", thumbY: "thumb-y"} | The suffix-classes of controller elements |
+
+## Dynamic State
+
+allows read and write, like:
+
+```
+$("#test1").scrollable({
+    onScroll = function() {
+        console.log(this.state);
+        that.state.x = 0;
+    }
+});
+```
+
+| State Key        | Type | Description |
+| ------------- |:--------:| -----:|
+| dir     | `Bool` | Boolean `dir` in options |
+| autoHide     | `Bool` | Whether to auto hide(by options) |
+| H     | `Number` | Container Height |
+| W     | `Number` | Container Width |
+| h     | `Number` | Content Height |
+| w     | `Number` | Content Width |
+| x     | `Number` | Axis-x offset of the thumb |
+| y     | `Number` | Axis-y offset of the thumb |
+| offset_x     | `Number` | Axis-x offset of Content |
+| offset_y     | `Number` | Axis-y offset of Content |
+| _w     | `Number` | thumb width|
+| _h     | `Number` | thumb height|
+
+## Event API
+
+| Function Name        | Description |
+| ------------- |:--------:| -----:|
+| onInit     |  Initialization trigger  |
+| onScroll     |  Triggered when scrolling  |
+| onWheel     |  Triggered when mouse wheel to scroll  |
+| onStartPress     |  Triggered when press on scrollbar  |
+| onEndPress     |  Triggered when press end  |
+| onStartDrag     |  Triggered when start drag  |
+| onEndDrag     |  Triggered when end drag  |
 
 ## Contributing
 
 ## Release History
 
+* 2013/10/21 - v0.1.2 - Fixed: #1 & replace MutationObserver to setInterval
+* 2013/10/18 - v0.1.1 - Add: Inner style/content Dynamic change supports
 * 2013/10/17 - v0.1.0 - First release
 
 ## License
