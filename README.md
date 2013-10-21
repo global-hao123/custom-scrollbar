@@ -122,7 +122,7 @@ $("#test1, #test2").scrollable({
 | ------------- |:-----|:--------:| -----:|
 | wheelSpeed     | `Number` | 20 | mousewheel speed |
 | pressDelay     | `Number` | 200 | Mousedown pressing delay on scrollbar |
-| watch     | `Number` | 200 | Timer of update layout(0 | false ==> do not check)|
+| watch     | `Number` | 200 | Timer of update layout(0, false ==> do not check)|
 | dir     | `String` | "" | Direction(ltr/trl), default to auto detect|
 | autoHide     | `String` / `Bool` / `Number` | true | Auto hide scrollbar when mouseleave(true, 1, "1" ==> true) |
 | customClass    | `String` | "" | Add a custom class, like: `mod-scroll--black` |
