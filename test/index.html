@@ -178,15 +178,17 @@
 </body>
 <script>
 
-$("#test1").scrollable();
+$("#test1, #test0").scrollable();
 
 setInterval(function() {
     $("#test1, #test0")
-        .append("<p>pppp</p>")
-        // .height($("#test1").height() + 50);
+        // .append("<p>pppp</p>")
+        .height($("#test1").height() + 50);
+
+    // $("#test1").attr("dir", "rtl");
 }, 2000);
 
-$("#test2").scrollable({
+/*$("#test2").scrollable({
     autoHide: false,
     onInit: function() {
         this.scrollTo(this.$el, {
@@ -212,6 +214,6 @@ $("#test2").scrollable({
     onEndDrag: function() {
         console.log("onEndDrag")
     }
-});
+});*/
 </script>
 </html>

@@ -29,7 +29,7 @@ $ && function(WIN, DOC, undef) {
     /**
      * check if MutationObserver supports
      */
-    , MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver
+    // , MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver
 
     /**
      * Constructor
@@ -59,6 +59,12 @@ $ && function(WIN, DOC, undef) {
              * @type {Number}
              */
             , pressDelay: 200
+
+            /**
+             * Timer of update layout(0 | false ==> do not check)
+             * @type {Number}
+             */
+            , watch: 200
 
             /**
              * Direction, default to auto
@@ -146,21 +152,23 @@ fn.init = function() {
 
     $parent
         .css({overflow: "hidden"})
-        .append($wrap)
-        .on("mousewheel", function(e) {
-            e.preventDefault();
-            that.wheelHandle.call($el, e, that);
-        });
+        .append($wrap).on("mousewheel", function(e) {
+        e.preventDefault();
+        that.wheelHandle.call($el, e, that);
+    });
 
     $wrap
-        .addClass("mod-scroll " + that.args.customClass)
-        .on("mousedown", function(e) {
+        .addClass("mod-scroll " + that.args.customClass);
+
+    $el.on("mousedown", function(e) {
             e.preventDefault();
             that.mouseHandle.call(e.target, e, that);
         });
 
     // Observer fallback to IE / Opera
-    if(!MutationObserver) that.resizeTimer = setInterval(function() {
+    // if(!MutationObserver) 
+
+    if(that.args.watch != 0) that.resizeTimer = setInterval(function() {
         that.detectLayout() && that.resizeHandle.call(that);
     }, 200);
 
@@ -255,8 +263,9 @@ fn.initLayout = function() {
     state.$thumbX.css(style).css({"width": state._w + "px"});
 
     // Start Observer
-    if(MutationObserver) {
+    /*if(MutationObserver) {
         that.observer = new MutationObserver(function(mutations) {
+            // console.log(mutations)
             that.detectLayout() && that.resizeHandle.call(that);
         });
 
@@ -266,9 +275,10 @@ fn.initLayout = function() {
                 , childList: true
                 , characterData: true
                 // , subtree: true
+                // , attributeFilter: ["dir"]
             });
         });
-    }
+    }*/
 }
 
 fn.resizeHandle = function() {
@@ -527,9 +537,11 @@ fn.destroy = function() {
     var that = this;
 
     // Stop observer
-    MutationObserver
+/*    MutationObserver
     ? that.observer && that.observer.disconnect()
-    : clearInterval(that.resizeTimer);
+    : clearInterval(that.resizeTimer);*/
+
+    that.resizeTimer && clearInterval(that.resizeTimer);
 }
 
 
