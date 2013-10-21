@@ -2,13 +2,13 @@
  * jQuery custom-scrollbar plugin
  * @author yuji@baidu.com
  * @update 2013/10/17
- * 
+ *
  * Compatibility:
  * 1. IE 6-10, Firefox, Opera, Chrome, Safari
  * 2. ltr/rtl
  * 3. Windows / Mac
  * 4. Mouse / Touchpad
- * 
+ *
  * TODO:
  *
  * 1. [Feature] drag when middle-key is pressing
@@ -102,7 +102,7 @@ $ && function(WIN, DOC, undef) {
              * onScroll
              *
              * onWheel
-             * 
+             *
              * onStartPress
              * onEndPress
              *
@@ -129,7 +129,7 @@ fn.init = function() {
     // Initialization controller Layout
     $.map(that.args.controller, function(v, k) {
         $wrap.append(that.state["$" + k] = $('<div class="mod-scroll_' + v + '"></div>'));
-    }); 
+    });
 
     // Update State
     that.updateState();
@@ -152,21 +152,21 @@ fn.init = function() {
 
     $parent
         .css({overflow: "hidden"})
-        .append($wrap).on("mousewheel", function(e) {
+        .append($wrap)
+        .on("mousewheel", function(e) {
         e.preventDefault();
         that.wheelHandle.call($el, e, that);
     });
 
     $wrap
-        .addClass("mod-scroll " + that.args.customClass);
-
-    $el.on("mousedown", function(e) {
+        .addClass("mod-scroll " + that.args.customClass)
+        .on("mousedown", function(e) {
             e.preventDefault();
             that.mouseHandle.call(e.target, e, that);
         });
 
     // Observer fallback to IE / Opera
-    // if(!MutationObserver) 
+    // if(!MutationObserver)
 
     if(that.args.watch != 0) that.resizeTimer = setInterval(function() {
         that.detectLayout() && that.resizeHandle.call(that);
@@ -402,7 +402,7 @@ fn.mouseHandle = function(e, that) {
                 that.args.onScroll && that.args.onScroll.call(that);
             });
     }
-    
+
     else if(this === state.$barX[0] || this === state.$barY[0]) {
         // isPressing = !1;
         isPressing = !0;
@@ -549,7 +549,7 @@ fn.destroy = function() {
 $.fn.extend({
     /**
      * plugin
-     * 
+     *
      * @param {Object} argument comment
      */
     scrollable: function(args) {
