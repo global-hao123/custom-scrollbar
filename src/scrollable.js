@@ -2,13 +2,13 @@
  * jQuery custom-scrollbar plugin
  * @author yuji@baidu.com
  * @update 2013/10/17
- * 
+ *
  * Compatibility:
  * 1. IE 6-10, Firefox, Opera, Chrome, Safari
  * 2. ltr/rtl
  * 3. Windows / Mac
  * 4. Mouse / Touchpad
- * 
+ *
  * TODO:
  *
  * 1. [Feature] drag when middle-key is pressing
@@ -37,11 +37,13 @@ $ && function(WIN, DOC, undef) {
      * @param  {[type]} args [description]
      * @return {[type]}      [description]
      */
-    , scroll = function(el, args) {
+    , scroll = function($el, args) {
 
         var that = this;
-        that.el = el;
-        that.$el = $(el);
+
+        that.$el = $el;
+        that.el = $el[0];
+
         that.$parent = that.$el.parent();
         that.state = {};
 
@@ -102,7 +104,7 @@ $ && function(WIN, DOC, undef) {
              * onScroll
              *
              * onWheel
-             * 
+             *
              * onStartPress
              * onEndPress
              *
@@ -129,7 +131,7 @@ fn.init = function() {
     // Initialization controller Layout
     $.map(that.args.controller, function(v, k) {
         $wrap.append(that.state["$" + k] = $('<div class="mod-scroll_' + v + '"></div>'));
-    }); 
+    });
 
     // Update State
     that.updateState();
@@ -152,21 +154,21 @@ fn.init = function() {
 
     $parent
         .css({overflow: "hidden"})
-        .append($wrap).on("mousewheel", function(e) {
+        .append($wrap)
+        .on("mousewheel", function(e) {
         e.preventDefault();
         that.wheelHandle.call($el, e, that);
     });
 
     $wrap
-        .addClass("mod-scroll " + that.args.customClass);
-
-    $el.on("mousedown", function(e) {
+        .addClass("mod-scroll " + that.args.customClass)
+        .on("mousedown", function(e) {
             e.preventDefault();
             that.mouseHandle.call(e.target, e, that);
         });
 
     // Observer fallback to IE / Opera
-    // if(!MutationObserver) 
+    // if(!MutationObserver)
 
     if(that.args.watch != 0) that.resizeTimer = setInterval(function() {
         that.detectLayout() && that.resizeHandle.call(that);
@@ -207,10 +209,10 @@ fn.updateState = function() {
             // Inner Width
             , w: $el.outerWidth()
 
-            // Axis-x offset of thumb
+            // Axis-x current-offset of Content
             , x: that.state.x || 0
 
-            // Axis-y offset of thumb
+            // Axis-y current-offset of Content
             , y: that.state.y || 0
         })
 
@@ -227,8 +229,8 @@ fn.updateState = function() {
     that.state = $.extend(state, {
 
         // Update scroll offset
-        offset_x: Math.max(state.w - state.W, 0)
-        , offset_y: Math.max(state.h - state.H, 0)
+        _x: Math.max(state.w - state.W, 0)
+        , _y: Math.max(state.h - state.H, 0)
 
         // Update thumb size
         , _w: thumbSize(state.W, state.w)
@@ -402,7 +404,7 @@ fn.mouseHandle = function(e, that) {
                 that.args.onScroll && that.args.onScroll.call(that);
             });
     }
-    
+
     else if(this === state.$barX[0] || this === state.$barY[0]) {
         // isPressing = !1;
         isPressing = !0;
@@ -463,7 +465,7 @@ fn.wheelHandle = function(e, that) {
 fn.fixPos = function(n, axis) {
     var min = Math.min
         , max = Math.max
-        , N = -this.state["offset_" + axis];
+        , N = -this.state["_" + axis];
 
     if(!this.state.dir && axis === "x") {
         min = Math.max;
@@ -497,6 +499,23 @@ fn.scrollTo = supportCss3d
 }
 : function($el, pos) {
     $el[0].style.margin = this.state.dir ? pos.y + "px" + " auto auto " + pos.x + "px" : pos.y + "px " + -pos.x + "px auto auto";
+}
+
+/**
+ * Move Content to {x, y}
+ * @type {[type]}
+ */
+fn.goTo = function(pos) {
+    var that = this;
+    $.each(pos, function(k, v) {
+        that.state[k] = that.fixPos(v, k);
+    });
+    that.resizeHandle()
+    that.scrollTo(that.$el, {
+        x: that.state.x
+        , y: that.state.y
+    });
+    return that;
 }
 
 /**
@@ -549,13 +568,11 @@ fn.destroy = function() {
 $.fn.extend({
     /**
      * plugin
-     * 
+     *
      * @param {Object} argument comment
      */
     scrollable: function(args) {
-        return this.each(function() {
-            return new scroll(this, args);
-        });
+        return new scroll(this, args);
     }
 });
 

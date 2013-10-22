@@ -178,12 +178,32 @@
 </body>
 <script>
 
-$("#test1, #test0").scrollable();
+
+var xx = $("#test2").scrollable();
+
+$("#test1, #test3").each(function() {
+    $(this).scrollable();
+});
+
+setTimeout(function() {
+    xx.goTo({
+        x: 0
+        , y: -xx.state._y
+    });
+}, 1000);
+
+setTimeout(function() {
+    console.log(xx.state._y)
+    xx.goTo({
+        x: 0
+        , y: 0
+    });
+}, 1000);
 
 setInterval(function() {
     $("#test1, #test0")
         // .append("<p>pppp</p>")
-        .height($("#test1").height() + 50);
+        // .height($("#test1").height() + 50);
 
     // $("#test1").attr("dir", "rtl");
 }, 2000);
