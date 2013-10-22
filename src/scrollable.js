@@ -37,11 +37,13 @@ $ && function(WIN, DOC, undef) {
      * @param  {[type]} args [description]
      * @return {[type]}      [description]
      */
-    , scroll = function(el, args) {
+    , scroll = function($el, args) {
 
         var that = this;
-        that.el = el;
-        that.$el = $(el);
+
+        that.$el = $el;
+        that.el = $el[0];
+
         that.$parent = that.$el.parent();
         that.state = {};
 
@@ -207,10 +209,10 @@ fn.updateState = function() {
             // Inner Width
             , w: $el.outerWidth()
 
-            // Axis-x offset of thumb
+            // Axis-x current-offset of Content
             , x: that.state.x || 0
 
-            // Axis-y offset of thumb
+            // Axis-y current-offset of Content
             , y: that.state.y || 0
         })
 
@@ -227,8 +229,8 @@ fn.updateState = function() {
     that.state = $.extend(state, {
 
         // Update scroll offset
-        offset_x: Math.max(state.w - state.W, 0)
-        , offset_y: Math.max(state.h - state.H, 0)
+        _x: Math.max(state.w - state.W, 0)
+        , _y: Math.max(state.h - state.H, 0)
 
         // Update thumb size
         , _w: thumbSize(state.W, state.w)
@@ -463,7 +465,7 @@ fn.wheelHandle = function(e, that) {
 fn.fixPos = function(n, axis) {
     var min = Math.min
         , max = Math.max
-        , N = -this.state["offset_" + axis];
+        , N = -this.state["_" + axis];
 
     if(!this.state.dir && axis === "x") {
         min = Math.max;
@@ -497,6 +499,23 @@ fn.scrollTo = supportCss3d
 }
 : function($el, pos) {
     $el[0].style.margin = this.state.dir ? pos.y + "px" + " auto auto " + pos.x + "px" : pos.y + "px " + -pos.x + "px auto auto";
+}
+
+/**
+ * Move Content to {x, y}
+ * @type {[type]}
+ */
+fn.goTo = function(pos) {
+    var that = this;
+    $.each(pos, function(k, v) {
+        that.state[k] = that.fixPos(v, k);
+    });
+    that.resizeHandle()
+    that.scrollTo(that.$el, {
+        x: that.state.x
+        , y: that.state.y
+    });
+    return that;
 }
 
 /**
@@ -553,9 +572,7 @@ $.fn.extend({
      * @param {Object} argument comment
      */
     scrollable: function(args) {
-        return this.each(function() {
-            return new scroll(this, args);
-        });
+        return new scroll(this, args);
     }
 });
 

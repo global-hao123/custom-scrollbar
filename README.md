@@ -49,7 +49,20 @@ $("#test1").scrollable();
 ### Simple Syntax:
 
 ```
-$("#test1, #test2").scrollable();
+var scrollbar = $("#test2").scrollable();
+
+$("#test1, #test3").each(function() {
+    $(this).scrollable();
+});
+
+setTimeout(function() {
+    scrollbar.goTo({
+        x: 0
+
+        // move to bottom
+        , y: -scrollbar.state._y
+    });
+}, 1000);
 ```
 
 ### Verbose Syntax:
@@ -58,7 +71,7 @@ There are lots of options, so you could do something more like:
 ```javascript
 
 // Options
-$("#test1, #test2").scrollable({
+$("#test2").scrollable({
     /**
      * mousewheel speed
      * @type {Number}
@@ -134,9 +147,9 @@ allows read and write, like:
 
 ```
 $("#test1").scrollable({
-    onScroll = function() {
+    onScroll: function() {
         console.log(this.state);
-        that.state.x = 0;
+        this.state.x = 0;
     }
 });
 ```
@@ -149,12 +162,25 @@ $("#test1").scrollable({
 | W     | `Number` | Container Width |
 | h     | `Number` | Content Height |
 | w     | `Number` | Content Width |
-| x     | `Number` | Axis-x offset of the thumb |
-| y     | `Number` | Axis-y offset of the thumb |
-| offset_x     | `Number` | Axis-x offset of Content |
-| offset_y     | `Number` | Axis-y offset of Content |
+| x     | `Number` | Axis-x current-offset of the Content |
+| y     | `Number` | Axis-y current-offset of the Content |
+| _x     | `Number` | Axis-x max-offset of Content |
+| _y     | `Number` | Axis-y max-offset of Content |
 | _w     | `Number` | thumb width|
 | _h     | `Number` | thumb height|
+
+## Dynamic Function
+
+| Function Name        | Arguments | Description |
+| ------------- |:--------:| -----:|
+| goTo     | {x: `Number`, y:`Number`} | Move Content to {x, y}, sync move both thumb and content |
+| updateState     |  | Update State |
+| initLayout     |  | Initialization Layout |
+| fixPos     | `Number`, `String` | Fixed bounds check |
+| detectLayout     |  | Detect layout is dynamic changed |
+| scrollTo     | `jQueryDOM`, {x: `Number`, y:`Number`} | Move `jQueryDOM` to {x, y}  |
+| getDelta     | `jQuery Event Object` | Compatible get wheel delta |
+| destroy     | | Destroy the current instance |
 
 ## Event API
 
@@ -172,6 +198,10 @@ $("#test1").scrollable({
 
 ## Release History
 
+* 2013/10/21 - v0.1.3
+    - change a state name(offset_x ==> _x)
+    - Add: [API] `goTo`
+    - return each instance separate
 * 2013/10/21 - v0.1.2 - Fixed: #1 & replace MutationObserver to setInterval
 * 2013/10/18 - v0.1.1 - Add: Inner style/content Dynamic change supports
 * 2013/10/17 - v0.1.0 - First release
