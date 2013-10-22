@@ -138,6 +138,7 @@ $("#test2").scrollable({
 | watch     | `Number` | 200 | Timer of update layout(0, false ==> do not check)|
 | dir     | `String` | "" | Direction(ltr/trl), default to auto detect|
 | autoHide     | `String` / `Bool` / `Number` | true | Auto hide scrollbar when mouseleave(true, 1, "1" ==> true) |
+| activateClass    | `String` | "" | Add a activate class when pressing or dragging |
 | customClass    | `String` | "" | Add a custom class, like: `mod-scroll--black` |
 | controller    | `Object` | {barX: "bar-x", barY: "bar-y", thumbX: "thumb-x", thumbY: "thumb-y"} | The suffix-classes of controller elements |
 
