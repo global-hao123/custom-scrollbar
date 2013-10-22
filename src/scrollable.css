@@ -50,3 +50,12 @@
     opacity: .5; filter: alpha(opacity=50);
     border-radius: 5px;
 }
+
+.mod-scroll--activate .mod-scroll_bar-x,
+.mod-scroll--activate .mod-scroll_bar-y{
+    opacity: .2; filter: alpha(opacity=20);
+}
+.mod-scroll--activate .mod-scroll_thumb-x,
+.mod-scroll--activate .mod-scroll_thumb-y{
+    opacity: .6; filter: alpha(opacity=60);
+}
