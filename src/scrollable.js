@@ -82,7 +82,7 @@ $ && function(WIN, DOC, undef) {
             , autoHide: true
 
             /**
-             * Add a activate class when pressing or dragging"
+             * Add a activate class when pressing or dragging
              * @type {String}
              */
             , activateClass: "mod-scroll--activate"
@@ -162,9 +162,9 @@ fn.init = function() {
         .css({overflow: "hidden"})
         .append($wrap)
         .on("mousewheel", function(e) {
-        e.preventDefault();
-        that.wheelHandle.call($el, e, that);
-    });
+            e.preventDefault();
+            that.wheelHandle.call($el, e, that);
+        });
 
     $wrap
         .addClass("mod-scroll " + that.args.customClass)
@@ -520,10 +520,10 @@ fn.scrollTo = supportCss3d
  */
 fn.goTo = function(pos) {
     var that = this;
+    that.resizeHandle();
     $.each(pos, function(k, v) {
         that.state[k] = that.fixPos(v, k);
     });
-    that.resizeHandle()
     that.scrollTo(that.$el, {
         x: that.state.x
         , y: that.state.y
