@@ -178,7 +178,7 @@ fn.init = function() {
 
     if(that.args.watch != 0) that.resizeTimer = setInterval(function() {
         that.detectLayout() && that.resizeHandle.call(that);
-    }, 200);
+    }, that.args.watch);
 
     that.args.onInit && that.args.onInit.call(that);
 }
@@ -289,13 +289,9 @@ fn.initLayout = function() {
     }*/
 }
 
-fn.resizeHandle = function() {
+fn.moveThumb= function(){
     var that = this,
-    state = that.state;
-
-    that.observer && that.observer.disconnect();
-
-    that.updateState();
+        state = that.state;
 
     that.scrollTo(state.$thumbX, {
         x: Math.floor(-state.x * state.W / state.w)
@@ -306,6 +302,17 @@ fn.resizeHandle = function() {
         x: 0
         , y: Math.floor(-state.y * state.H / state.h)
     });
+}
+
+fn.resizeHandle = function() {
+    var that = this,
+        state = that.state;
+
+    // that.observer && that.observer.disconnect();
+
+    that.updateState();
+
+    that.moveThumb();
 
     that.initLayout();
 }
@@ -455,15 +462,7 @@ fn.wheelHandle = function(e, that) {
         , y: fixNum("y")
     });
 
-    that.scrollTo(state.$thumbY, {
-        x: 0
-        , y: Math.floor(-state.y * state.H / state.h)
-    });
-
-    that.scrollTo(state.$thumbX, {
-        x: Math.floor(-state.x * state.W / state.w)
-        , y: 0
-    });
+    that.moveThumb();
 
     that.args.onWheel && that.args.onWheel.call(that);
     that.args.onScroll && that.args.onScroll.call(that);
@@ -511,6 +510,8 @@ fn.scrollTo = supportCss3d
     $el.css({"transform": "translate3d(" + pos.x + "px," + pos.y + "px, 0)"});
 }
 : function($el, pos) {
+    if(isNaN(pos.x) || !isFinite(pos.x)) pos.x = 0;
+    if(isNaN(pos.y) || !isFinite(pos.y)) pos.y = 0;
     $el[0].style.margin = this.state.dir ? pos.y + "px" + " auto auto " + pos.x + "px" : pos.y + "px " + -pos.x + "px auto auto";
 }
 
@@ -520,10 +521,12 @@ fn.scrollTo = supportCss3d
  */
 fn.goTo = function(pos) {
     var that = this;
-    that.resizeHandle();
+    that.updateState();
     $.each(pos, function(k, v) {
         that.state[k] = that.fixPos(v, k);
     });
+    that.moveThumb();
+    that.initLayout();
     that.scrollTo(that.$el, {
         x: that.state.x
         , y: that.state.y
