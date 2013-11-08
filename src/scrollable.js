@@ -408,6 +408,15 @@ fn.mouseHandle = function(e, that) {
 
                 that.$wrap.addClass(that.args.activateClass);
 
+                // disable userselect during dragging
+                if(typeof userSelect === "string"){
+                   return document.documentElement.style[userSelect] = "none";
+                }
+                document.unselectable  = "on";
+                document.onselectstart = function(){
+                   return false;
+                }
+
                 that.args.onStartDrag && that.args.onStartDrag.call(that);
 
                 that.scrollTo(that.$el, {
@@ -439,6 +448,14 @@ fn.mouseHandle = function(e, that) {
             isPressing = !1;
             state.draging = !1;
             that.$wrap.removeClass(that.args.activateClass);
+
+            // enable userselect after dragging
+            if(typeof userSelect === "string"){
+              return document.documentElement.style[userSelect] = "text";
+            }
+            document.unselectable  = "off";
+            document.onselectstart = null;
+
             that.args.onEndDrag && that.args.onEndDrag.call(that);
         })
 }
