@@ -15,6 +15,6 @@
   "homepage": "http://gitlab.pro/common-ui/custom-scrollbar",
   "ignore": [
     "**/*",
-    "!src"
+    "!src/"
   ]
 }
