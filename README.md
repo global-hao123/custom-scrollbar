@@ -141,6 +141,7 @@ $("#test2").scrollable({
 | activateClass    | `String` | "" | Add a activate class when pressing or dragging |
 | customClass    | `String` | "" | Add a custom class, like: `mod-scroll--black` |
 | controller    | `Object` | {barX: "bar-x", barY: "bar-y", thumbX: "thumb-x", thumbY: "thumb-y"} | The suffix-classes of controller elements |
+| preventDefaultWheel    | `Bool` | false | Prevent default Wheel event |
 
 ## Dynamic State
 

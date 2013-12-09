@@ -94,6 +94,12 @@ $ && function(WIN, DOC, undef) {
             , customClass: ""
 
             /**
+             * Prevent default Wheel event
+             * @type {Boolean}
+             */
+            , preventDefaultWheel: false
+
+            /**
              * The suffix-classes of controller elements
              * @type {Object}
              */
@@ -103,6 +109,8 @@ $ && function(WIN, DOC, undef) {
                 , thumbX: "thumb-x"
                 , thumbY: "thumb-y"
             }
+
+            // , bounds
 
             /**
              * Event API
@@ -162,7 +170,6 @@ fn.init = function() {
         .css({overflow: "hidden"})
         .append($wrap)
         .on("mousewheel", function(e) {
-            e.preventDefault();
             that.wheelHandle.call($el, e, that);
         });
 
@@ -181,6 +188,50 @@ fn.init = function() {
     }, that.args.watch);
 
     that.args.onInit && that.args.onInit.call(that);
+
+    /*rAF(function(scrolling) {
+        scrolling = state.scrolling;
+
+        if(scrolling) {
+            state.scrolling = 0;
+            var axis = scrolling.axis
+                , e = scrolling.e
+                , n = scrolling.n
+                , tmp = scrolling.tmp
+                , pos = scrolling.pos
+                , N = scrolling.N
+                , $thumb = scrolling.$thumb;
+
+            state[axis] = that.fixPos(-n * (axis === "y"
+                ? tmp.h + e.pageY - tmp.y
+                : tmp.w + e.pageX - tmp.x) / N, axis);
+
+            that.$wrap.addClass(that.args.activateClass);
+
+            // disable userselect during dragging
+            if(typeof userSelect === "string"){
+               return document.documentElement.style[userSelect] = "none";
+            }
+            document.unselectable  = "on";
+            document.onselectstart = function(){
+               return false;
+            }
+
+            that.args.onStartDrag && that.args.onStartDrag.call(that);
+
+            that.scrollTo(that.$el, {
+                x: state.x
+                , y: state.y
+            });
+
+            pos[axis] = Math.floor(-state[axis] * N / n);
+            that.scrollTo($thumb, pos);
+
+            that.args.onScroll && that.args.onScroll.call(that);
+
+        }
+        rAF(arguments.callee);
+    });*/
 }
 
 /**
@@ -470,16 +521,27 @@ fn.wheelHandle = function(e, that) {
 
     var state = that.state,
         $el = $(that.el),
-        fixNum = function(axis) {
-            return that.state[axis] = that.fixPos(that.state[axis] + that.getDelta(e)[axis] * that.args.wheelSpeed, axis);
-        };
+
+        getOffset = function(axis) {
+            return that.state[axis] + that.getDelta(e)[axis] * that.args.wheelSpeed;
+        },
+
+        x = getOffset("x"),
+        y = getOffset("y"),
+        _x = that.fixPos(x, "x"),
+        _y = that.fixPos(y, "y");
+
+    !(that.args.preventDefaultWheel && (!x && _y === that.state.y || !y && _x === that.state.x || x < _x || y < _y)) &&　e.preventDefault();
 
     that.scrollTo(that.$el, {
-        x: fixNum("x")
-        , y: fixNum("y")
+        x: _x
+        , y: _y
     });
 
     that.moveThumb();
+
+    that.state.x = _x;
+    that.state.y = _y;
 
     that.args.onWheel && that.args.onWheel.call(that);
     that.args.onScroll && that.args.onScroll.call(that);
