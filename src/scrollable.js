@@ -369,6 +369,19 @@ fn.resizeHandle = function() {
 }
 
 /**
+ * [selectable description]
+ * @param  {Boolean} isPrevent [description]
+ * @param  {Object}  $el       [description]
+ * @return {Object}            [description]
+ */
+fn.selectable = function(isPrevent, $el) {
+    return $el || $("body")
+        .css("user-select", isPrevent ? "none" : "text")
+        .attr("unselectable", isPrevent ? "on" : "off")
+        [isPrevent ? "on" : "off"]('selectstart.scroll', false);
+}
+
+/**
  * Mouse evnent handle, contains click & drag
  * @param  {[type]} e    [description]
  * @param  {[type]} that [description]
@@ -460,13 +473,7 @@ fn.mouseHandle = function(e, that) {
                 that.$wrap.addClass(that.args.activateClass);
 
                 // disable userselect during dragging
-                if(typeof userSelect === "string"){
-                   return document.documentElement.style[userSelect] = "none";
-                }
-                document.unselectable  = "on";
-                document.onselectstart = function(){
-                   return false;
-                }
+                that.selectable(1);
 
                 that.args.onStartDrag && that.args.onStartDrag.call(that);
 
@@ -501,11 +508,7 @@ fn.mouseHandle = function(e, that) {
             that.$wrap.removeClass(that.args.activateClass);
 
             // enable userselect after dragging
-            if(typeof userSelect === "string"){
-              return document.documentElement.style[userSelect] = "text";
-            }
-            document.unselectable  = "off";
-            document.onselectstart = null;
+            that.selectable(0);
 
             that.args.onEndDrag && that.args.onEndDrag.call(that);
         })
@@ -523,7 +526,14 @@ fn.wheelHandle = function(e, that) {
         $el = $(that.el),
 
         getOffset = function(axis) {
-            return that.state[axis] + that.getDelta(e)[axis] * that.args.wheelSpeed;
+            var delta = that.getDelta(e)
+                , fixAxis = that.args.wheelDir;
+
+            if(fixAxis) {
+                delta[fixAxis] = delta[fixAxis === "x" ? "y" : "x"];
+                delta[fixAxis === "x" ? "y" : "x"] = 0;
+            }
+            return that.state[axis] + delta[axis] * that.args.wheelSpeed;
         },
 
         x = getOffset("x"),
@@ -531,7 +541,10 @@ fn.wheelHandle = function(e, that) {
         _x = that.fixPos(x, "x"),
         _y = that.fixPos(y, "y");
 
-    !(that.args.preventDefaultWheel && (!x && _y === that.state.y || !y && _x === that.state.x || x < _x || y < _y)) &&　e.preventDefault();
+    !(that.args.preventDefaultWheel
+
+    && (!x && _y === that.state.y || !y && _x === that.state.x || x < _x || y < _y))
+    &&　e.preventDefault();
 
     that.scrollTo(that.$el, {
         x: _x
@@ -657,7 +670,6 @@ fn.destroy = function() {
 
     that.resizeTimer && clearInterval(that.resizeTimer);
 }
-
 
 // jQuery plugin wraper
 $.fn.extend({

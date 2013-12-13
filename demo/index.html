@@ -14,6 +14,9 @@
 
 .inner{ background: #eee; border: 20px solid #f90; line-height: 2; width: 200px; overflow: hidden;}
 
+
+.demo-x{ width: 700px;}
+.demo-x .inner{ width: 1700px; height: 360px;}
 </style>
 
 <link rel="stylesheet" href="../src/scrollable.css">
@@ -175,6 +178,62 @@
     </div>
 </div>
 
+
+<div class="wrap demo-x">
+    <div class="inner" id="testX">
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+    </div>
+</div>
 </body>
 <script>
 
@@ -192,20 +251,14 @@ setTimeout(function() {
     });
 }, 1000);
 
-setTimeout(function() {
-    console.log(xx.state._y)
-    xx.goTo({
-        x: 0
-        , y: 0
-    });
-}, 1000);
-
+var id = 0;
 setInterval(function() {
-    $("#test1, #test0")
+    // $("#test1, #test0")
         // .append("<p>pppp</p>")
         // .height($("#test1").height() + 50);
 
     // $("#test1").attr("dir", "rtl");
+    $("#test2").append("<p>pppp" + id++ + "</p>")
 }, 2000);
 
 /*$("#test2").scrollable({
@@ -235,5 +288,10 @@ setInterval(function() {
         console.log("onEndDrag")
     }
 });*/
+
+$("#testX").scrollable({
+    autoHide: 0,
+    wheelDir: "x"
+});
 </script>
 </html>
