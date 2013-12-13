@@ -142,7 +142,7 @@ $("#test2").scrollable({
 | customClass    | `String` | "" | Add a custom class, like: `mod-scroll--black` |
 | controller    | `Object` | {barX: "bar-x", barY: "bar-y", thumbX: "thumb-x", thumbY: "thumb-y"} | The suffix-classes of controller elements |
 | preventDefaultWheel    | `Bool` | false | Prevent default Wheel event |
-| wheelDir    | `x|y` | `String` | force revise wheel dir |
+| wheelDir    | `x` / `y` | `String` | force revise wheel dir |
 
 ## Dynamic State
 
