@@ -483,6 +483,7 @@ fn.mouseHandle = function(e, that) {
                 });
 
                 pos[axis] = Math.floor(-state[axis] * N / n);
+                pos[axis] = Math.min(pos[axis], N-(axis == "y"?state._h:state._w));
                 that.scrollTo($thumb, pos);
 
                 that.args.onScroll && that.args.onScroll.call(that);
@@ -509,7 +510,7 @@ fn.mouseHandle = function(e, that) {
 
             // enable userselect after dragging
             that.selectable(0);
-
+	    that.resizeHandle();
             that.args.onEndDrag && that.args.onEndDrag.call(that);
         })
 }
