@@ -340,19 +340,19 @@ fn.initLayout = function() {
     }*/
 }
 
-fn.moveThumb= function(){
+fn.moveThumb= function(duration){
     var that = this,
         state = that.state;
 
     that.scrollTo(state.$thumbX, {
         x: Math.floor(-state.x * state.W / state.w)
         , y: 0
-    });
+    }, duration);
 
     that.scrollTo(state.$thumbY, {
         x: 0
         , y: Math.floor(-state.y * state.H / state.h)
-    });
+    }, duration);
 }
 
 fn.resizeHandle = function() {
@@ -483,9 +483,10 @@ fn.mouseHandle = function(e, that) {
                 });
 
                 pos[axis] = Math.floor(-state[axis] * N / n);
-                pos[axis] = Math.min(pos[axis], N-(axis == "y"?state._h:state._w));
-                that.scrollTo($thumb, pos);
 
+                // Dynamic fix, for lazyload when drag.
+                pos[axis] = Math.min(pos[axis], N - (axis == "y" ? state._h : state._w));
+                that.scrollTo($thumb, pos);
                 that.args.onScroll && that.args.onScroll.call(that);
             });
     }
@@ -510,9 +511,9 @@ fn.mouseHandle = function(e, that) {
 
             // enable userselect after dragging
             that.selectable(0);
-	    that.resizeHandle();
+            that.resizeHandle();
             that.args.onEndDrag && that.args.onEndDrag.call(that);
-        })
+        });
 }
 
 /**
@@ -528,11 +529,11 @@ fn.wheelHandle = function(e, that) {
 
         getOffset = function(axis) {
             var delta = that.getDelta(e)
-                , fixAxis = that.args.wheelDir;
+                , wheelDir = that.args.wheelDir;
 
-            if(fixAxis) {
-                delta[fixAxis] = delta[fixAxis === "x" ? "y" : "x"];
-                delta[fixAxis === "x" ? "y" : "x"] = 0;
+            if(wheelDir) {
+                delta[wheelDir] = delta[wheelDir === "x" ? "y" : "x"];
+                delta[wheelDir === "x" ? "y" : "x"] = 0;
             }
             return that.state[axis] + delta[axis] * that.args.wheelSpeed;
         },
@@ -552,10 +553,10 @@ fn.wheelHandle = function(e, that) {
         , y: _y
     });
 
-    that.moveThumb();
-
     that.state.x = _x;
     that.state.y = _y;
+
+    that.moveThumb();
 
     that.args.onWheel && that.args.onWheel.call(that);
     that.args.onScroll && that.args.onScroll.call(that);
@@ -602,28 +603,48 @@ fn.scrollTo = supportCss3d
 ? function($el, pos) {
     $el.css({"transform": "translate3d(" + pos.x + "px," + pos.y + "px, 0)"});
 }
-: function($el, pos) {
+: function($el, pos, duration) {
     if(isNaN(pos.x) || !isFinite(pos.x)) pos.x = 0;
     if(isNaN(pos.y) || !isFinite(pos.y)) pos.y = 0;
-    $el[0].style.margin = this.state.dir ? pos.y + "px" + " auto auto " + pos.x + "px" : pos.y + "px " + -pos.x + "px auto auto";
+
+    var margin = this.state.dir ? pos.y + "px" + " auto auto " + pos.x + "px" : pos.y + "px " + -pos.x + "px auto auto";
+
+    duration
+    ? $el.animate({
+            "margin": margin
+    }, duration, "swing")
+    : $el[0].style.margin = margin;
 }
 
 /**
  * Move Content to {x, y}
  * @type {[type]}
  */
-fn.goTo = function(pos) {
+fn.goTo = function(pos, duration, callback) {
     var that = this;
     that.updateState();
     $.each(pos, function(k, v) {
         that.state[k] = that.fixPos(v, k);
     });
-    that.moveThumb();
+
+    // support animate
+    if(duration) {
+        that.$parent.addClass("mod-scroll--animate");
+        setTimeout(function() {
+            that.$parent.removeClass("mod-scroll--animate");
+            callback && callback();
+        }, 1000);
+    }
+
+    else callback && callback();
+
+    that.moveThumb(duration);
     that.initLayout();
     that.scrollTo(that.$el, {
         x: that.state.x
         , y: that.state.y
-    });
+    }, duration);
+
     return that;
 }
 

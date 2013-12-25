@@ -4,6 +4,7 @@
     left: 0; top: 0;
     width: 100%; height: 100%;
     border: 1px dotted transparent; box-sizing: border-box;
+    -webkit-backface-visibility: hidden;
 }
 
 .mod-scroll_bar-x{
@@ -59,4 +60,13 @@
 .mod-scroll--activate .mod-scroll_thumb-x,
 .mod-scroll--activate .mod-scroll_thumb-y{
     opacity: .6; filter: alpha(opacity=60);
+}
+
+.mod-scroll--animate .inner,
+.mod-scroll--animate .mod-scroll_thumb-x,
+.mod-scroll--animate .mod-scroll_thumb-y{
+    -webkit-transition: 1s ease;
+    -moz-transition: 1s ease;
+    -o-transition: 1s ease;
+    transition: 1s ease;
 }
