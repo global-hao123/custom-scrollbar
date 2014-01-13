@@ -201,6 +201,10 @@ $("#test1").scrollable({
 
 ## Release History
 
+* 2014/01/13 - v0.1.4
+
+    - Remove jquery.mousewheel depends
+
 * 2013/10/21 - v0.1.3
     - change a state name(offset_x ==> _x)
     - Add: [API] `goTo`

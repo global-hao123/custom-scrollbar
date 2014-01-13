@@ -169,7 +169,9 @@ fn.init = function() {
     $parent
         .css({overflow: "hidden"})
         .append($wrap)
-        .on("mousewheel", function(e) {
+
+        // firefox Compatible, not require jquery.mousewheel
+        .on(DOC.onmousewheel !== undef ? "mousewheel" : "DOMMouseScroll", function(e) {
             that.wheelHandle.call($el, e, that);
         });
 
