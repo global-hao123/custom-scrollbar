@@ -548,7 +548,7 @@ fn.wheelHandle = function(e, that) {
     !(that.args.preventDefaultWheel
 
     && (!x && _y === that.state.y || !y && _x === that.state.x || x < _x || y < _y))
-    &&　e.preventDefault();
+    && e.preventDefault();
 
     that.scrollTo(that.$el, {
         x: _x
