@@ -254,7 +254,18 @@ var that = this
 dir: function(el, dir) {
 that.args.dir = el.currentStyle
 ? el.currentStyle[dir]
-: WIN.getComputedStyle(el, null).getPropertyValue(dir) || "ltr"
+
+// fix firefox bug, @see: https://bugzilla.mozilla.org/show_bug.cgi?id=548397
+: function() {
+    var result = "";
+    if(WIN && WIN.getComputedStyle(el, null)) {
+        result = WIN.getComputedStyle(el, null).getPropertyValue(dir);
+    }
+    else {
+        result = document.documentElement.dir;
+    }
+    return result || "ltr"
+}();
 return that.args.dir === "ltr";
 }(that.el, "direction")
 
