@@ -8,6 +8,8 @@
 <style>
 /*body{ padding: 378px;}*/
 *{ margin: 0; padding: 0;}
+
+body{ height: 2000px;}
 .wrap{ border: 1px solid #000; width: 120px; height: 200px; float: left;
     overflow: auto;
 }
@@ -240,14 +242,145 @@
 </div>
 
 
+<br>
+
+<div class="wrap demo-x">
+    <div class="inner" id="testOut">
+        scroll...
+        <br>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus, voluptatem, dolorum soluta praesentium a deserunt quos sit cupiditate amet reiciendis rerum quae! Impedit, beatae, adipisci in similique eligendi corporis tempore.
+
+        <div class="wrap demo-x" style="width: 100px;">
+            <div class="inner" id="testIn">
+                scroll...
+                <br>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus, voluptatem, dolorum soluta praesentium a deserunt quos sit cupiditate amet reiciendis rerum quae! Impedit, beatae, adipisci in similique eligendi corporis tempore.
+                <br>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci, consectetur, doloribus nam accusamus atque ex voluptate modi itaque pariatur cum. Odit temporibus quaerat laudantium ipsum soluta explicabo et blanditiis similique!
+                <br>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, error nisi provident incidunt ea quis qui enim quam sapiente beatae vitae natus necessitatibus laboriosam magnam facere labore pariatur omnis odio.
+                <br>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laborum, quod, porro magnam possimus ex similique illo assumenda! Quaerat, aut, ipsa natus qui quia unde officia cumque fuga dolorum consequatur ducimus!
+                <br>
+                scroll...
+                <br>
+                scroll...
+                <br>
+                scroll...
+                <br>
+                scroll...
+                <br>
+                scroll...
+                <br>
+                scroll...
+                <br>
+                scroll...
+                <br>
+                scroll...
+                <br>
+                scroll...
+                <br>
+                scroll...
+                <br>
+                scroll...
+                <br>
+                scroll...
+                <br>
+                scroll...
+                <br>
+                scroll...
+                <br>
+                scroll...
+                <br>
+                scroll...
+                <br>
+                scroll...
+                <br>
+                scroll...
+                <br>
+                scroll...
+                <br>
+                scroll...
+                <br>
+                scroll...
+            </div>
+        </div>
+        <br>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci, consectetur, doloribus nam accusamus atque ex voluptate modi itaque pariatur cum. Odit temporibus quaerat laudantium ipsum soluta explicabo et blanditiis similique!
+        <br>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, error nisi provident incidunt ea quis qui enim quam sapiente beatae vitae natus necessitatibus laboriosam magnam facere labore pariatur omnis odio.
+        <br>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laborum, quod, porro magnam possimus ex similique illo assumenda! Quaerat, aut, ipsa natus qui quia unde officia cumque fuga dolorum consequatur ducimus!
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+        <br>
+        scroll...
+    </div>
+</div>
+
+
 </body>
 <script>
 
+var $ = jQuery;
 
 var xx = $("#test2").scrollable();
 
 $("#test1, #test3").each(function() {
-    $(this).scrollable();
+    $(this).scrollable({
+        preventDefaultWheel: true
+    });
+});
+
+$("#testOut").scrollable({
+    autoHide: 0
+    , preventDefaultWheel: true
+});
+
+$("#testIn").scrollable({
+    autoHide: 0
+    , preventDefaultWheel: true
+    , onWheel: function(e) {
+        e.stopPropagation();
+    }
 });
 
 setTimeout(function() {

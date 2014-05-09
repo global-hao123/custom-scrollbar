@@ -442,7 +442,7 @@ offset = (axis === "x" ? e.pageX - $target.offset().left : e.pageY - $target.off
 
 offset = offset > 0 ? offset > (axis === "x" ? state._w : state._h) : offset < 0;
 
-that.args.onScroll && that.args.onScroll.call(that);
+that.args.onScroll && that.args.onScroll.call(that, e);
 
 if(!offset) {
 isPressing = !1;
@@ -504,7 +504,7 @@ pos[axis] = Math.floor(-state[axis] * N / n);
 // Dynamic fix, for lazyload when drag.
 pos[axis] = Math.min(pos[axis], N - (axis == "y" ? state._h : state._w));
 that.scrollTo($thumb, pos);
-that.args.onScroll && that.args.onScroll.call(that);
+that.args.onScroll && that.args.onScroll.call(that, e);
 });
 }
 
@@ -575,8 +575,8 @@ that.state.y = _y;
 
 that.moveThumb();
 
-that.args.onWheel && that.args.onWheel.call(that);
-that.args.onScroll && that.args.onScroll.call(that);
+that.args.onWheel && that.args.onWheel.call(that, e);
+that.args.onScroll && that.args.onScroll.call(that, e);
 }
 
 /**
