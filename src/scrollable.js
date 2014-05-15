@@ -579,7 +579,7 @@ fn.wheelHandle = function(e, that) {
         , isScrollable = !x && _y === that.state.y || !y && _x === that.state.x || x < _x || y < _y;
 
     !isScrollable && e.stopPropagation();
-    !(that.args.preventDefaultWheel && isScrollable) && e.preventDefault();
+    !(!that.args.preventDefaultWheel && isScrollable) && e.preventDefault();
 
     that.scrollTo(that.$el, {
         x: _x
