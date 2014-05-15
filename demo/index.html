@@ -366,18 +366,18 @@ var xx = $("#test2").scrollable();
 
 $("#test1, #test3").each(function() {
     $(this).scrollable({
-        preventDefaultWheel: true
+        //preventDefaultWheel: true
     });
 });
 
 $("#testOut").scrollable({
     autoHide: 0
-    , preventDefaultWheel: true
+    //, preventDefaultWheel: true
 });
 
 $("#testIn").scrollable({
     autoHide: 0
-    , preventDefaultWheel: true
+    //, preventDefaultWheel: true
     , onWheel: function(e) {
         // e.stopPropagation();
     }
